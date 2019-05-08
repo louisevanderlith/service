@@ -12,5 +12,8 @@
 *.out
 
 service
+
+dist 
+
 db/
 !db/*.seed.json

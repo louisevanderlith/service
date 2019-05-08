@@ -23,7 +23,7 @@ func main() {
 		log.Print("Register: ", err)
 	} else {
 		err = mango.UpdateTheme(srv.ID)
-
+		
 		if err != nil {
 			panic(err)
 		}
