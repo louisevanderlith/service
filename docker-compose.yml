@@ -5,6 +5,7 @@ services:
     image: avosa/gate:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "80:80"
@@ -15,6 +16,7 @@ services:
       - ServiceDEV
     volumes:
       - ../gate/certs:/certs:ro
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     command: ["./wait-for-it.sh", "ServiceDEV:8096", "--", "python", "app.py"]
 
   ServiceDEV:
@@ -22,6 +24,7 @@ services:
       build: .
       environment:
         - RUNMODE=${RUNMODE}
+        - KEYPATH=${KEYPATH}
         - HOST=${HOST}
       depends_on:
         - ThemeDEV
@@ -39,6 +42,7 @@ services:
     image: avosa/theme:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "8093:8093"
@@ -46,12 +50,15 @@ services:
         - mango_net
     depends_on:
         - FolioDEV
+    volumes: 
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     command: ["./wait-for-it.sh", "FolioDEV:8090", "--", "python", "app.py"]
 
   FolioDEV:
     image: avosa/folio:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "8090:8090"
@@ -59,6 +66,7 @@ services:
       - mango_net
     volumes: 
       - ../folio/db:/db
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     depends_on:
         - RouterDEV
     command: ["./wait-for-it.sh", "RouterDEV:8080", "--", "python", "app.py"]
@@ -67,16 +75,20 @@ services:
     image: avosa/router:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "8080:8080"
     networks:
-        - mango_net
+      - mango_net
+    volumes: 
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
 
   LogbookDEV:
     image: avosa/logbook:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "8089:8089"
@@ -84,6 +96,7 @@ services:
       - mango_net
     volumes: 
       - ../logbook/db:/db
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     depends_on:
         - RouterDEV
     command: ["./wait-for-it.sh", "RouterDEV:8080", "--", "python", "app.py"]
@@ -92,6 +105,7 @@ services:
     image: avosa/secure:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=/db/sign_rsa.pub
       - HOST=${HOST}
     ports:
       - "8086:8086"
@@ -107,7 +121,10 @@ services:
     image: avosa/auth:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
+    volumes: 
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     ports:
       - "8094:8094"
     networks:
@@ -120,6 +137,7 @@ services:
     image: avosa/artifact:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "8082:8082"
@@ -127,6 +145,7 @@ services:
       - "mango_net"
     volumes: 
       - ../artifact/db:/db
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     depends_on:
     - "RouterDEV"
     command: ["./wait-for-it.sh", "RouterDEV:8080", "--", "python", "app.py"]
@@ -135,6 +154,7 @@ services:
     image: avosa/comms:dev
     environment:
       - RUNMODE=${RUNMODE}
+      - KEYPATH=${KEYPATH}
       - HOST=${HOST}
     ports:
       - "8085:8085"
@@ -142,6 +162,7 @@ services:
       - mango_net
     volumes: 
       - ../comms/db:/db
+      - ../secure/db/sign_rsa.pub:${KEYPATH}
     depends_on:
         - RouterDEV
     command: ["./wait-for-it.sh", "RouterDEV:8080", "--", "python", "app.py"]
