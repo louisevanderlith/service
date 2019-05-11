@@ -8,19 +8,13 @@
                     <form id="frmRegister" role="form">
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" type="text" id="txtName" minlength="3" autocomplete="name" maxlength="75" placeholder="Name" required autofocus="">
+                                <input class="input is-large" type="text" id="txtName" minlength="3" autocomplete="name" maxlength="75" placeholder="Full name" required autofocus="">
                                 <p class="help is-danger"></p>
                             </div>
                         </div>
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" type="number" id="intID" minlength="13" autocomplete="idnumber" maxlength="13" placeholder="ID Number" required autofocus="">
-                                <p class="help is-danger"></p>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" type="number" id="telNo" minlength="10" autocomplete="telnumber" maxlength="10" placeholder="Telephone number" required autofocus="">
+                                <input class="input is-large" type="tel" id="txtPhone" minlength="10" autocomplete="" maxlength="10" placeholder="Telephone number" required autofocus="">
                                 <p class="help is-danger"></p>
                             </div>
                         </div>
@@ -30,20 +24,7 @@
                                 <p class="help is-danger"></p>
                             </div>
                         </div>
-
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" id="txtPassword" autocomplete="new-password" type="password" placeholder="Password" required >
-                                <p class="help is-danger"></p>
-                            </div>
-                        </div>
-                        <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="password" id="txtConfirmPass" type="password" placeholder="Confirm Password" required data-match="#txtPassword" data-match-error="The Passwords don't match."  placeholder="Your Password">
-                                    <p class="help is-danger"></p>
-                                </div>
-                            </div>
-                        <button id="btnRegister" class="button is-block is-info is-large is-fullwidth">Register</button>
+                        <button id="btnRegister" class="button is-block is-info is-large is-fullwidth">Register Client</button>
                     </form>
                 </div>
                 <p class="has-text-grey">
