@@ -1,0 +1,55 @@
+<section class="hero">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="column is-4 is-offset-4">
+                <h3 class="title has-text-grey">Registration</h3>
+                <div class="box">
+
+                    <form id="frmRegister" role="form">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="text" id="txtName" minlength="3" autocomplete="name" maxlength="75" placeholder="Name" required autofocus="">
+                                <p class="help is-danger"></p>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="number" id="intID" minlength="13" autocomplete="idnumber" maxlength="13" placeholder="ID Number" required autofocus="">
+                                <p class="help is-danger"></p>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="number" id="telNo" minlength="10" autocomplete="telnumber" maxlength="10" placeholder="Telephone number" required autofocus="">
+                                <p class="help is-danger"></p>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" id="txtEmail" type="email" autocomplete="email" placeholder="Email" minlength="3" required>
+                                <p class="help is-danger"></p>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" id="txtPassword" autocomplete="new-password" type="password" placeholder="Password" required >
+                                <p class="help is-danger"></p>
+                            </div>
+                        </div>
+                        <div class="field">
+                                <div class="control">
+                                    <input class="input is-large" type="password" id="txtConfirmPass" type="password" placeholder="Confirm Password" required data-match="#txtPassword" data-match-error="The Passwords don't match."  placeholder="Your Password">
+                                    <p class="help is-danger"></p>
+                                </div>
+                            </div>
+                        <button id="btnRegister" class="button is-block is-info is-large is-fullwidth">Register</button>
+                    </form>
+                </div>
+                <p class="has-text-grey">
+                    <a href="../">Need Help?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

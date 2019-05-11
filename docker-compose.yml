@@ -5,7 +5,7 @@ services:
     image: avosa/gate:dev
     environment:
       - RUNMODE=${RUNMODE}
-      - KEYPATH=${KEYPATH}
+      - KEYPATH=/db/sign_rsa.pub
       - HOST=${HOST}
     ports:
       - "80:80"
@@ -16,7 +16,7 @@ services:
       - ServiceDEV
     volumes:
       - ../gate/certs:/certs:ro
-      - ../secure/db/sign_rsa.pub:${KEYPATH}
+      - ../secure/db/sign_rsa.pub:/db/sign_rsa.pub
     command: ["./wait-for-it.sh", "ServiceDEV:8096", "--", "python", "app.py"]
 
   ServiceDEV:
