@@ -36,6 +36,8 @@ services:
         - mango_net
       ports:
         - "8096:8096"
+      volumes: 
+        - ../secure/db/sign_rsa.pub:${KEYPATH}
       command: ["./wait-for-it.sh", "ThemeDEV:8093", "--", "python", "app.py"]
 
   ThemeDEV:
