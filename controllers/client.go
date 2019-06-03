@@ -22,7 +22,7 @@ func (c *ClientController) Get() {
 }
 
 func (c *ClientController) GetCreate() {
-	c.Setup("clientEdit", "Client", true)
+	c.Setup("clientCreate", "Client", true)
 }
 
 func (c *ClientController) GetEdit() {

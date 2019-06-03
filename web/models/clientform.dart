@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 
 import '../entityapi.dart';
@@ -29,7 +30,9 @@ class ClientForm extends FormState {
   void onSend(Event e) {
     if (isFormValid()) {
       disableSubmit(true);
-      submitSend().then((obj) => {disableSubmit(false)});
+      submitSend().then((obj) {
+        disableSubmit(false);
+      });
     }
   }
 
@@ -38,7 +41,7 @@ class ClientForm extends FormState {
       "Name": name,
       "Contact": contact,
     };
-    
+
     return await createEntity(obj);
   }
 }
