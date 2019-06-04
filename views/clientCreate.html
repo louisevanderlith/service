@@ -4,7 +4,6 @@
             <div class="column is-4 is-offset-4">
                 <h3 class="title has-text-grey">Registration</h3>
                 <div class="box">
-
                     <form id="frmRegister" role="form">
                         <div class="field">
                             <div class="control">
@@ -14,7 +13,7 @@
                         </div>
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" type="tel" id="txtPhone" minlength="10" autocomplete="" maxlength="10" placeholder="Telephone number" required autofocus="">
+                                <input class="input is-large" type="tel" id="txtPhone" minlength="10" autocomplete="tel" maxlength="10" placeholder="Telephone number" required>
                                 <p class="help is-danger"></p>
                             </div>
                         </div>
@@ -24,7 +23,8 @@
                                 <p class="help is-danger"></p>
                             </div>
                         </div>
-                        <button id="btnRegister" class="button is-block is-info is-large is-fullwidth">Register Client</button>
+                        <button id="btnSubmit" class="button is-block is-info is-large is-fullwidth">Register Client</button>
+                        <p id="frmRegisterErr" class="help is-danger"></p>
                     </form>
                 </div>
             </div>

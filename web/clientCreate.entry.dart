@@ -1,7 +1,7 @@
-import 'models/clientform.dart';
+import 'package:Service.APP/models/clientform.dart';
 
 main() {
   print("Client Create");
 
-  new ClientForm("#frmRegister", "#txtName", "#txtEmail", "#txtPhone", "#btnRegister");
+  new ClientForm("#frmRegister", "#txtName", "#txtEmail", "#txtPhone", "#btnSubmit");
 }

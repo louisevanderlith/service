@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"log"
+
+	"github.com/louisevanderlith/husk"
 	"github.com/louisevanderlith/mango"
 	"github.com/louisevanderlith/mango/control"
 )
@@ -22,13 +25,28 @@ func (c *ClientController) Get() {
 }
 
 func (c *ClientController) GetCreate() {
-	c.Setup("clientCreate", "Client", true)
+	c.Setup("clientCreate", "Client Create", true)
 }
 
 func (c *ClientController) GetEdit() {
-	c.Setup("clientEdit", "Client", true)
+	c.Setup("clientEdit", "Client Edit", true)
 }
 
 func (c *ClientController) GetView() {
-	c.Setup("clientView", "Client", true)
+	c.Setup("clientView", "Client View", true)
+
+	key, err := husk.ParseKey(c.Ctx.Input.Param(":key"))
+
+	if err != nil {
+		c.Serve(nil, err)
+	}
+
+	result := make(map[string]interface{})
+	_, err = mango.DoGET(c.GetMyToken(), &result, c.GetInstanceID(), "Entity.API", "info", key.String())
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	c.Serve(result, err)
 }

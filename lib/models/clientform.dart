@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import '../entityapi.dart';
@@ -8,6 +8,7 @@ import 'contactitem.dart';
 class ClientForm extends FormState {
   TextInputElement _name;
   ContactItem _contact;
+  ParagraphElement _error;
 
   ClientForm(String formID, String nameElem, String emailElem, String phoneElem,
       String submitID)
@@ -16,7 +17,6 @@ class ClientForm extends FormState {
     _contact = new ContactItem(formID, emailElem, phoneElem, submitID);
 
     querySelector(submitID).onClick.listen(onSend);
-    registerFormElements([_name]);
   }
 
   String get name {
@@ -27,21 +27,19 @@ class ClientForm extends FormState {
     return _contact;
   }
 
-  void onSend(Event e) {
+  void onSend(Event e) async {
     if (isFormValid()) {
       disableSubmit(true);
-      submitSend().then((obj) {
+
+      var result = await createEntity(name, contact);
+      var obj = jsonDecode(result.response);
+
+      if (result.status == 200) {
+        window.alert(obj['Data']);
         disableSubmit(false);
-      });
+      } else {
+        _error.text = obj['Error'];
+      }
     }
-  }
-
-  Future submitSend() async {
-    var obj = {
-      "Name": name,
-      "Contact": contact,
-    };
-
-    return await createEntity(obj);
   }
 }

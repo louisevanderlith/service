@@ -5,24 +5,30 @@ import 'dart:convert';
 Map<String, String> _pastNames = {"Router.API": routerDefault()};
 
 String routerDefault() {
-  InputElement hostPath = querySelector('#HostID');
+  HiddenInputElement hostPath = querySelector("#HostID");
   return "https://router${hostPath.value}v1/discovery/";
 }
 
 Future<String> getRouterPath(String apiName) async {
-  InputElement instanceElem = querySelector('#InstanceID');
+  HiddenInputElement instanceElem = querySelector("#InstanceID");
+  var compltr = new Completer<String>();
   var routerURL = await getServiceURL("Router.API");
+  compltr.complete("${routerURL}${instanceElem.value}/${apiName}/true");
 
-  return "${routerURL}${instanceElem.value}/${apiName}/true";
+  return compltr.future;
 }
 
 Future<String> doLookup(String apiName) async {
   var routerPath = await getRouterPath(apiName);
-  var resp =
-      await HttpRequest.getString(routerPath, onProgress: lookupProgress);
-  final json = jsonDecode(resp);
+  var compltr = new Completer<String>();
+  var resp = await HttpRequest.request(routerPath,
+      method: "GET", onProgress: lookupProgress);
+  final json = jsonDecode(resp.response);
 
-  return json["Data"];
+  print(json);
+  compltr.complete(json["Data"]);
+
+  return compltr.future;
 }
 
 void lookupProgress(ProgressEvent info) {

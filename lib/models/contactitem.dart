@@ -11,8 +11,6 @@ class ContactItem extends FormState {
       : super(formID, submitID) {
     _email = querySelector(emailElem);
     _phone = querySelector(phoneElem);
-
-    registerFormElements([_email, _phone]);
   }
 
   String get email {
