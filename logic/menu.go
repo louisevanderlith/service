@@ -12,7 +12,6 @@ func getItems(path string) *control.Menu {
 	result := control.NewMenu(path)
 
 	result.AddItem("#", "Clients", "fa-users", clientChlidren(path))
-	//result.AddItem("#", "Comment API", "fa-chat", commentChildren(path))
 
 	return result
 }
