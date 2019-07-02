@@ -6,12 +6,13 @@ import 'package:Service.APP/models/contactitem.dart';
 
 import 'pathlookup.dart';
 
-Future<HttpRequest> createEntity(String name, ContactItem contact) async {
+Future<HttpRequest> createEntity(String name, ContactItem contact, String identification) async {
   final url = await buildPath("Entity.API", "info", new List<String>());
   
   final data = jsonEncode({
       "Name": name,
       "Contact": contact,
+      "Identification": identification
     });
 
   final compltr = new Completer<HttpRequest>();

@@ -21,7 +21,7 @@ func NewClientCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *
 }
 
 func (c *ClientController) Get() {
-	c.Setup("client", "Clients", true)
+	c.Setup("clientList", "Clients", true)
 }
 
 func (c *ClientController) GetCreate() {

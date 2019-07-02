@@ -15,7 +15,7 @@ service
 
 dist 
 
-db/
+db/*.husk
 !db/*.seed.json
 
 #Dart

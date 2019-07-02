@@ -13,6 +13,12 @@
                         </div>
                         <div class="field">
                             <div class="control">
+                                <input class="input is-large" id="txtIdentity" type="text" placeholder="Identification" minlength="10" required>
+                                <p class="help is-danger"></p>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
                                 <input class="input is-large" type="tel" id="txtPhone" minlength="10" autocomplete="tel" maxlength="10" placeholder="Telephone number" required>
                                 <p class="help is-danger"></p>
                             </div>
@@ -23,6 +29,7 @@
                                 <p class="help is-danger"></p>
                             </div>
                         </div>
+                        
                         <button id="btnSubmit" class="button is-block is-info is-large is-fullwidth">Register Client</button>
                         <p id="frmRegisterErr" class="help is-danger"></p>
                     </form>

@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/louisevanderlith/mango"
 	"github.com/louisevanderlith/mango/control"
-	"github.com/louisevanderlith/service/logic"
 )
 
 type DefaultController struct {
@@ -19,6 +18,5 @@ func NewDefaultCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) 
 }
 
 func (c *DefaultController) Get() {
-	c.Setup("default", "Service Home", false)
-	c.CreateSideMenu(logic.GetMenu("/"))
+	c.Setup("default", "Service Home", true)
 }
