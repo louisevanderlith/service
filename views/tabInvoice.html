@@ -1,0 +1,51 @@
+<section class="hero is-info welcome is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h2 class="subtitle">
+                {{ template "_shared/breadcrumbs.html" .}}
+            </h2>
+            <h1 class="title">
+                {User} Invoices
+            </h1>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <table class="table is-fullwidth is-hoverable" id="dataTable">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Invoice no.</th>
+                <th>Date</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Client</th>
+                <th>Invoice no.</th>
+                <th>Date</th>
+                <th>Amount</th>
+            </tr>
+        </tfoot>
+        <tbody>
+           <!--{{range $key, $val := .Data}}-->
+            <tr>
+                <td>{Client}</td>
+                <td>{InvoiceNo}</td>
+                <td>{Date}</td>
+                <td>{Amount}</td>
+                <td>
+                    <p class="buttons">
+                        <!--<a href="/secure/user/{{$val.Key}}" class="button is-primary">-->
+                            <span class="icon is-small">
+                                <i class="fas fa-file-alt"></i>
+                            </span>
+                        </a>
+                    </p>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</section>
