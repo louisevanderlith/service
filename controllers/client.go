@@ -2,22 +2,15 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/xontrols"
 	"github.com/louisevanderlith/husk"
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
 )
 
 type ClientController struct {
-	control.UIController
-}
-
-func NewClientCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *ClientController {
-	result := &ClientController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+	xontrols.UICtrl
 }
 
 func (c *ClientController) Get() {
@@ -35,18 +28,20 @@ func (c *ClientController) GetEdit() {
 func (c *ClientController) GetView() {
 	c.Setup("clientView", "Client View", true)
 
-	key, err := husk.ParseKey(c.Ctx.Input.Param(":key"))
+	key, err := husk.ParseKey(c.FindParam("key"))
 
 	if err != nil {
-		c.Serve(nil, err)
+		c.Serve(http.StatusBadRequest, err, nil)
 	}
 
 	result := make(map[string]interface{})
-	_, err = mango.DoGET(c.GetMyToken(), &result, c.GetInstanceID(), "Entity.API", "info", key.String())
+	code, err := droxolite.DoGET(c.GetMyToken(), &result, c.Settings.InstanceID, "Entity.API", "info", key.String())
 
 	if err != nil {
 		log.Println(err)
+		c.Serve(code, err, nil)
+		return
 	}
 
-	c.Serve(result, err)
+	c.Serve(http.StatusOK, nil, result)
 }

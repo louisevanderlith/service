@@ -2,22 +2,15 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/xontrols"
 	"github.com/louisevanderlith/husk"
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
 )
 
 type PartController struct {
-	control.UIController
-}
-
-func NewPartCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *PartController {
-	result := &PartController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+	xontrols.UICtrl
 }
 
 //parts/view/A10
@@ -25,17 +18,17 @@ func (c *PartController) Get() {
 	c.Setup("partList", "Parts Inventory", true)
 
 	result := []interface{}{}
-	pagesize := c.Ctx.Input.Param(":pagesize")
+	pagesize := c.FindParam("pagesize")
 
-	_, err := mango.DoGET(c.GetMyToken(), &result, c.GetInstanceID(), "Stock.API", "part", "all", pagesize)
+	code, err := droxolite.DoGET(c.GetMyToken(), &result, c.Settings.InstanceID, "Stock.API", "part", "all", pagesize)
 
 	if err != nil {
 		log.Println(err)
-		c.Serve(nil, err)
+		c.Serve(code, err, nil)
 		return
 	}
 
-	c.Serve(result, nil)
+	c.Serve(http.StatusOK, nil, result)
 }
 
 func (c *PartController) GetCreate() {
@@ -45,18 +38,22 @@ func (c *PartController) GetCreate() {
 func (c *PartController) GetView() {
 	c.Setup("partView", "Parts View", true)
 
-	key, err := husk.ParseKey(c.Ctx.Input.Param(":key"))
-
-	if err != nil {
-		c.Serve(nil, err)
-	}
-
-	result := make(map[string]interface{})
-	_, err = mango.DoGET(c.GetMyToken(), &result, c.GetInstanceID(), "Stock.API", "part", key.String())
+	key, err := husk.ParseKey(c.FindParam("key"))
 
 	if err != nil {
 		log.Println(err)
+		c.Serve(http.StatusBadRequest, err, nil)
+		return
 	}
 
-	c.Serve(result, err)
+	result := make(map[string]interface{})
+	code, err := droxolite.DoGET(c.GetMyToken(), &result, c.Settings.InstanceID, "Stock.API", "part", key.String())
+
+	if err != nil {
+		log.Println(err)
+		c.Serve(code, err, nil)
+		return
+	}
+
+	c.Serve(http.StatusOK, nil, result)
 }

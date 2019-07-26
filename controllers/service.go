@@ -2,33 +2,32 @@ package controllers
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/xontrols"
 	"github.com/louisevanderlith/husk"
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
 )
 
 type ServiceController struct {
-	control.UIController
-}
-
-func NewServiceCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *ServiceController {
-	result := &ServiceController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+	xontrols.UICtrl
 }
 
 func (c *ServiceController) Get() {
 	c.Setup("serviceList", "Services", true)
 
 	result := []interface{}{}
-	pagesize := c.Ctx.Input.Param(":pagesize")
+	pagesize := c.FindParam("pagesize")
 
-	_, err := mango.DoGET(c.GetMyToken(), &result, c.GetInstanceID(), "Stock.API", "service", "all", pagesize)
+	code, err := droxolite.DoGET(c.GetMyToken(), &result, c.Settings.InstanceID, "Stock.API", "service", "all", pagesize)
 
-	c.Serve(result, err)
+	if err != nil {
+		log.Println(err)
+		c.Serve(code, err, nil)
+		return
+	}
+
+	c.Serve(http.StatusOK, nil, result)
 }
 
 func (c *ServiceController) GetCreate() {
@@ -38,18 +37,22 @@ func (c *ServiceController) GetCreate() {
 func (c *ServiceController) GetView() {
 	c.Setup("serviceView", "Service View", true)
 
-	key, err := husk.ParseKey(c.Ctx.Input.Param(":key"))
-
-	if err != nil {
-		c.Serve(nil, err)
-	}
-
-	result := make(map[string]interface{})
-	_, err = mango.DoGET(c.GetMyToken(), &result, c.GetInstanceID(), "Stock.API", "service", key.String())
+	key, err := husk.ParseKey(c.FindParam("key"))
 
 	if err != nil {
 		log.Println(err)
+		c.Serve(http.StatusBadRequest, err, nil)
+		return
 	}
 
-	c.Serve(result, err)
+	result := make(map[string]interface{})
+	code, err := droxolite.DoGET(c.GetMyToken(), &result, c.Settings.InstanceID, "Stock.API", "service", key.String())
+
+	if err != nil {
+		log.Println(err)
+		c.Serve(code, err, nil)
+		return
+	}
+
+	c.Serve(http.StatusOK, nil, result)
 }
