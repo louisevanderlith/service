@@ -1,16 +1,44 @@
 package routers
 
 import (
-	"github.com/astaxie/beego"
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
-	secure "github.com/louisevanderlith/secure/core"
-	"github.com/louisevanderlith/secure/core/roletype"
+	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/roletype"
+
 	"github.com/louisevanderlith/service/controllers"
 )
 
-func Setup(s *mango.Service) {
-	ctrlmap := EnableFilter(s)
+func Setup(e *droxolite.Epoxy) {
+	//Default
+	deftCtrl := &controllers.DefaultController{}
+	deftGroup := droxolite.NewRouteGroup("", deftCtrl)
+	deftGroup.AddRoute("", "/", "GET", roletype.User, deftCtrl.Get)
+	e.AddNamedGroup("Home", deftGroup)
+
+	//Clients
+	clientCtrl := &controllers.ClientController{}
+	clientGroup := droxolite.NewRouteGroup("clients", clientCtrl)
+	clientGroup.AddRoute("Search", "/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.Owner, clientCtrl.Get)
+	clientGroup.AddRoute("View", "/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, clientCtrl.GetView)
+	clientGroup.AddRoute("Edit", "/edit/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, clientCtrl.GetEdit)
+	clientGroup.AddRoute("Create", "/create", "GET", roletype.User, clientCtrl.GetCreate)
+	e.AddNamedGroup("Clients", clientGroup)
+
+	//Parts
+	partCtrl := &controllers.PartController{}
+	partGroup := droxolite.NewRouteGroup("parts", partCtrl)
+	partGroup.AddRoute("View", "/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, partCtrl.GetView)
+	partGroup.AddRoute("Search", "/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.User, partCtrl.Get)
+	partGroup.AddRoute("Create", "/create", "GET", roletype.User, partCtrl.GetCreate)
+	e.AddNamedGroup("Parts", partGroup)
+
+	//Services
+	servCtrl := &controllers.ServiceController{}
+	servGroup := droxolite.NewRouteGroup("services", servCtrl)
+	servGroup.AddRoute("View", "/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, servCtrl.GetView)
+	servGroup.AddRoute("Search", "/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.User, servCtrl.Get)
+	servGroup.AddRoute("Create", "/create", "GET", roletype.User, servCtrl.GetCreate)
+	e.AddNamedGroup("Services", servGroup)
+	/* := EnableFilter(s)
 
 	siteName := beego.AppConfig.String("defaultsite")
 	theme, err := mango.GetDefaultTheme(ctrlmap.GetInstanceID(), siteName)
@@ -20,9 +48,24 @@ func Setup(s *mango.Service) {
 	}
 
 	beego.Router("/", controllers.NewDefaultCtrl(ctrlmap, theme))
-	beego.Router("/service", controllers.NewServiceCtrl(ctrlmap, theme))
+
+	srvCtrl := controllers.NewServiceCtrl(ctrlmap, theme)
+	beego.Router("/services/view/:pagesize", srvCtrl, "get:Get")
+	beego.Router("/services/create", srvCtrl, "get:GetCreate")
+	beego.Router("/service/:key", srvCtrl, "get:GetView")
+
+	partCtrl := controllers.NewPartCtrl(ctrlmap, theme)
+	beego.Router("/parts/view/:pagesize", partCtrl, "get:Get")
+	beego.Router("/parts/create", partCtrl, "get:GetCreate")
+	beego.Router("/part/:key", partCtrl, "get:GetView")
+
+	clientCtrl := controllers.NewClientCtrl(ctrlmap, theme)
+	beego.Router("/client/edit/:key", clientCtrl, "get:GetEdit")
+	beego.Router("/client/create", clientCtrl, "get:GetCreate")
+	beego.Router("/client/:key", clientCtrl, "get:GetView")*/
 }
 
+/*
 func EnableFilter(s *mango.Service) *control.ControllerMap {
 	ctrlmap := control.CreateControlMap(s)
 
@@ -31,8 +74,11 @@ func EnableFilter(s *mango.Service) *control.ControllerMap {
 
 	ctrlmap.Add("/", emptyMap)
 	ctrlmap.Add("/service", emptyMap)
+	ctrlmap.Add("/part", emptyMap)
+	ctrlmap.Add("/client", emptyMap)
 
 	beego.InsertFilter("/*", beego.BeforeRouter, ctrlmap.FilterUI)
 
 	return ctrlmap
 }
+*/

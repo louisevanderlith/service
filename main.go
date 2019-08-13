@@ -1,39 +1,54 @@
 package main
 
 import (
-	"log"
 	"os"
+	"path"
 
-	"github.com/astaxie/beego"
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/enums"
+	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/servicetype"
 	"github.com/louisevanderlith/service/routers"
 )
 
 func main() {
-	// Register with router
-	mode := os.Getenv("RUNMODE")
-	pubPath := os.Getenv("KEYPATH")
-	
-	name := beego.BConfig.AppName
+	keyPath := os.Getenv("KEYPATH")
+	pubName := os.Getenv("PUBLICKEY")
+	host := os.Getenv("HOST")
+	profile := os.Getenv("PROFILE")
+	pubPath := path.Join(keyPath, pubName)
 
-	srv := mango.NewService(mode, name, pubPath, enums.APP)
-
-	port := beego.AppConfig.String("httpport")
-	err := srv.Register(port)
+	conf, err := droxolite.LoadConfig()
 
 	if err != nil {
-		log.Print("Register: ", err)
-	} else {
-		err = mango.UpdateTheme(srv.ID)
-		
-		if err != nil {
-			panic(err)
-		}
+		panic(err)
+	}
 
-		routers.Setup(srv)
+	// Register with router
+	srv := droxolite.NewService(conf.Appname, pubPath, conf.HTTPPort, servicetype.APP)
 
-		beego.SetStaticPath("/dist", "dist")
-		beego.Run()
+	err = srv.Register()
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = droxolite.UpdateTheme(srv.ID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	theme, err := droxolite.GetDefaultTheme(host, srv.ID, profile)
+
+	if err != nil {
+		panic(err)
+	}
+
+	poxy := droxolite.NewColourEpoxy(srv, theme, "master.html")
+	routers.Setup(poxy)
+
+	err = poxy.Boot()
+
+	if err != nil {
+		panic(err)
 	}
 }
