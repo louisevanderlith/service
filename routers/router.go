@@ -11,32 +11,33 @@ func Setup(e *droxolite.Epoxy) {
 	//Default
 	deftCtrl := &controllers.DefaultController{}
 	deftGroup := droxolite.NewRouteGroup("", deftCtrl)
-	deftGroup.AddRoute("/", "GET", roletype.User, deftCtrl.Get)
-	e.AddGroup(deftGroup)
+	deftGroup.AddRoute("", "/", "GET", roletype.User, deftCtrl.Get)
+	e.AddNamedGroup("Home", deftGroup)
 
 	//Clients
 	clientCtrl := &controllers.ClientController{}
 	clientGroup := droxolite.NewRouteGroup("clients", clientCtrl)
-	clientGroup.AddRoute("/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, clientCtrl.GetView)
-	clientGroup.AddRoute("/edit/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, clientCtrl.GetEdit)
-	clientGroup.AddRoute("/create", "GET", roletype.User, clientCtrl.GetCreate)
-	e.AddGroup(clientGroup)
+	clientGroup.AddRoute("Search", "/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.Owner, clientCtrl.Get)
+	clientGroup.AddRoute("View", "/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, clientCtrl.GetView)
+	clientGroup.AddRoute("Edit", "/edit/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, clientCtrl.GetEdit)
+	clientGroup.AddRoute("Create", "/create", "GET", roletype.User, clientCtrl.GetCreate)
+	e.AddNamedGroup("Clients", clientGroup)
 
 	//Parts
 	partCtrl := &controllers.PartController{}
 	partGroup := droxolite.NewRouteGroup("parts", partCtrl)
-	partGroup.AddRoute("/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, partCtrl.GetView)
-	partGroup.AddRoute("/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.User, partCtrl.Get)
-	partGroup.AddRoute("/create", "GET", roletype.User, partCtrl.GetCreate)
-	e.AddGroup(partGroup)
+	partGroup.AddRoute("View", "/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, partCtrl.GetView)
+	partGroup.AddRoute("Search", "/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.User, partCtrl.Get)
+	partGroup.AddRoute("Create", "/create", "GET", roletype.User, partCtrl.GetCreate)
+	e.AddNamedGroup("Parts", partGroup)
 
 	//Services
 	servCtrl := &controllers.ServiceController{}
 	servGroup := droxolite.NewRouteGroup("services", servCtrl)
-	servGroup.AddRoute("/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, servCtrl.GetView)
-	servGroup.AddRoute("/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.User, servCtrl.Get)
-	servGroup.AddRoute("/create", "GET", roletype.User, servCtrl.GetCreate)
-	e.AddGroup(servGroup)
+	servGroup.AddRoute("View", "/{key:[0-9]+\x60[0-9]+}", "GET", roletype.User, servCtrl.GetView)
+	servGroup.AddRoute("Search", "/all/{pagesize:[A-Z][0-9]+}", "GET", roletype.User, servCtrl.Get)
+	servGroup.AddRoute("Create", "/create", "GET", roletype.User, servCtrl.GetCreate)
+	e.AddNamedGroup("Services", servGroup)
 	/* := EnableFilter(s)
 
 	siteName := beego.AppConfig.String("defaultsite")
