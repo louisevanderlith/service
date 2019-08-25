@@ -5,43 +5,46 @@ import (
 	"net/http"
 
 	"github.com/louisevanderlith/droxolite"
-	"github.com/louisevanderlith/droxolite/xontrols"
+	"github.com/louisevanderlith/droxolite/context"
 	"github.com/louisevanderlith/husk"
 )
 
-type ClientController struct {
-	xontrols.UICtrl
+type Clients struct {
 }
 
-func (c *ClientController) Get() {
-	c.Setup("clientList", "Clients", true)
+func (c *Clients) Default(ctx context.Contexer) (int, interface{}) {
+	//c.Setup("clientList", "Clients", true)
+
+	return http.StatusOK, nil
 }
 
-func (c *ClientController) GetCreate() {
-	c.Setup("clientCreate", "Client Create", true)
+func (c *Clients) Search(ctx context.Contexer) (int, interface{}) {
+	//c.Setup("clientList", "Clients", true)
+
+	return http.StatusOK, nil
 }
 
-func (c *ClientController) GetEdit() {
-	c.Setup("clientEdit", "Client Edit", true)
-}
+func (c *Clients) View(ctx context.Contexer) (int, interface{}) {
+	//c.Setup("clientEdit", "Client Edit", true)
 
-func (c *ClientController) GetView() {
-	c.Setup("clientView", "Client View", true)
-
-	key, err := husk.ParseKey(c.FindParam("key"))
+	key, err := husk.ParseKey(ctx.FindParam("key"))
 
 	if err != nil {
-		c.Serve(http.StatusBadRequest, err, nil)
+		return http.StatusBadRequest, err
 	}
 
 	result := make(map[string]interface{})
-	code, err := droxolite.DoGET(c.GetMyToken(), &result, c.Settings.InstanceID, "Entity.API", "info", key.String())
+	code, err := droxolite.DoGET(ctx.GetMyToken(), &result, ctx.GetInstanceID(), "Entity.API", "info", key.String())
 
 	if err != nil {
 		log.Println(err)
-		c.Serve(code, err, nil)
-		return
+		return code, err
 	}
 
-	c.Serve(http.StatusOK, nil, result)
+	return http.StatusOK, result
+}
+
+func (c *Clients) Create(ctx context.Contexer) (int, interface{}) {
+	//c.Setup("clientCreate", "Client Create", true)
+	return http.StatusOK, nil
 }
