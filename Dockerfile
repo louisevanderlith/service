@@ -33,7 +33,6 @@ FROM alpine:latest
 
 COPY --from=builder /box/service .
 COPY --from=pyltjie /arrow/build/*.dart.js dist/js/
-COPY conf conf
 COPY views views
 
 RUN mkdir -p /views/_shared
