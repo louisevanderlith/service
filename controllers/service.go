@@ -12,7 +12,7 @@ import (
 type Services struct {
 }
 
-func (c *Services) Get(ctx context.Requester) (int, interface{}) {
+func (c *Services) Get(c *gin.Context) {
 	//c.Setup("serviceList", "Services", true)
 
 	result := []interface{}{}
@@ -28,11 +28,11 @@ func (c *Services) Get(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, result
 }
 
-func (c *Services) Search(ctx context.Requester) (int, interface{}) {
+func (c *Services) Search(c *gin.Context) {
 	//c.Setup("serviceList", "Services", true)
 
 	result := []interface{}{}
-	pagesize := ctx.FindParam("pagesize")
+	pagesize := c.Param("pagesize")
 
 	code, err := do.GET(ctx.GetMyToken(), &result, ctx.GetInstanceID(), "Stock.API", "service", pagesize)
 
@@ -44,16 +44,16 @@ func (c *Services) Search(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, result
 }
 
-func (c *Services) Create(ctx context.Requester) (int, interface{}) {
+func (c *Services) Create(c *gin.Context) {
 	//c.Setup("serviceCreate", "Service Create", true)
 
 	return http.StatusOK, nil
 }
 
-func (c *Services) View(ctx context.Requester) (int, interface{}) {
+func (c *Services) View(c *gin.Context) {
 	//c.Setup("serviceView", "Service View", true)
 
-	key, err := husk.ParseKey(ctx.FindParam("key"))
+	key, err := husk.ParseKey(c.Param("key"))
 
 	if err != nil {
 		log.Println(err)

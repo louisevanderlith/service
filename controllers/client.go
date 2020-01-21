@@ -12,22 +12,22 @@ import (
 type Clients struct {
 }
 
-func (c *Clients) Get(ctx context.Requester) (int, interface{}) {
+func (c *Clients) Get(c *gin.Context) {
 	//c.Setup("clientList", "Clients", true)
 
 	return http.StatusOK, nil
 }
 
-func (c *Clients) Search(ctx context.Requester) (int, interface{}) {
+func (c *Clients) Search(c *gin.Context) {
 	//c.Setup("clientList", "Clients", true)
 
 	return http.StatusOK, nil
 }
 
-func (c *Clients) View(ctx context.Requester) (int, interface{}) {
+func (c *Clients) View(c *gin.Context) {
 	//c.Setup("clientEdit", "Client Edit", true)
 
-	key, err := husk.ParseKey(ctx.FindParam("key"))
+	key, err := husk.ParseKey(c.Param("key"))
 
 	if err != nil {
 		return http.StatusBadRequest, err
@@ -44,7 +44,7 @@ func (c *Clients) View(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, result
 }
 
-func (c *Clients) Create(ctx context.Requester) (int, interface{}) {
+func (c *Clients) Create(c *gin.Context) {
 	//c.Setup("clientCreate", "Client Create", true)
 	return http.StatusOK, nil
 }
