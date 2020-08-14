@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func SetupRoutes(clnt, scrt, secureUrl, authUrl string) http.Handler {
+func SetupRoutes(clnt, scrt, securityUrl, authorityUrl string) http.Handler {
 	/*clients := &handles.Clients{}
 	parts := &handles.Parts{}
 	services := &handles.Services{}

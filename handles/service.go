@@ -1,25 +1,24 @@
 package handles
 
 import (
+	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/service/resources"
 	"html/template"
 	"log"
 	"net/http"
 
-	"github.com/louisevanderlith/droxolite/context"
 	"github.com/louisevanderlith/husk"
 )
 
 func GetServices(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Index",tmpl)
+	pge := mix.PreparePage("services", tmpl, "./views/services.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
 		pagesize := "A10"
 
-		src := resources.APIResource(http.DefaultClient, ctx)
+		src := resources.APIResource(http.DefaultClient, r)
 		result, err := src.FetchStockServices(pagesize)
 
 		if err != nil {
@@ -28,7 +27,7 @@ func GetServices(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = ctx.Serve(http.StatusOK, pge.Page(result, ctx.GetTokenInfo(), ctx.GetToken()))
+		err = mix.Write(w, pge.Create(r, result))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -37,14 +36,13 @@ func GetServices(tmpl *template.Template) http.HandlerFunc {
 }
 
 func SearchServices(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Index",tmpl)
+	pge := mix.PreparePage("Services", tmpl, "./views/services.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		pagesize := ctx.FindParam("pagesize")
+		pagesize := drx.FindParam(r, "pagesize")
 
-		src := resources.APIResource(http.DefaultClient, ctx)
+		src := resources.APIResource(http.DefaultClient, r)
 		result, err := src.FetchStockService(pagesize)
 
 		if err != nil {
@@ -53,7 +51,7 @@ func SearchServices(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = ctx.Serve(http.StatusOK, pge.Page(result, ctx.GetTokenInfo(), ctx.GetToken()))
+		err = mix.Write(w, pge.Create(r, result))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -62,12 +60,11 @@ func SearchServices(tmpl *template.Template) http.HandlerFunc {
 }
 
 func CreateService(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Index",tmpl)
+	pge := mix.PreparePage("Service Create", tmpl, "./views/servicecreate.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		err := ctx.Serve(http.StatusOK, pge.Page(nil, ctx.GetTokenInfo(), ctx.GetToken()))
+		err := mix.Write(w, pge.Create(r, nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -76,12 +73,11 @@ func CreateService(tmpl *template.Template) http.HandlerFunc {
 }
 
 func ViewService(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Index",tmpl)
+	pge := mix.PreparePage("Service View", tmpl, "./views/serviceview.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		key, err := husk.ParseKey(ctx.FindParam("key"))
+		key, err := husk.ParseKey(drx.FindParam(r, "key"))
 
 		if err != nil {
 			log.Println(err)
@@ -89,7 +85,7 @@ func ViewService(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		src := resources.APIResource(http.DefaultClient, ctx)
+		src := resources.APIResource(http.DefaultClient, r)
 		result, err := src.FetchStockService(key.String())
 
 		if err != nil {
@@ -98,7 +94,7 @@ func ViewService(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = ctx.Serve(http.StatusOK, pge.Page(result, ctx.GetTokenInfo(), ctx.GetToken()))
+		err = mix.Write(w, pge.Create(r, result))
 
 		if err != nil {
 			log.Println("Serve Error", err)

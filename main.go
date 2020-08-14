@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/service/handles"
 	"net/http"
 	"time"
@@ -16,7 +16,7 @@ func main() {
 
 	flag.Parse()
 
-	err := droxolite.UpdateTemplate(*clientId, *clientSecrt, *security)
+	err := drx.UpdateTemplate(*clientId, *clientSecrt, *security)
 
 	if err != nil {
 		panic(err)

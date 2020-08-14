@@ -1,23 +1,22 @@
 package handles
 
 import (
+	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/service/resources"
 	"html/template"
 	"log"
 	"net/http"
 
-	"github.com/louisevanderlith/droxolite/context"
 	"github.com/louisevanderlith/husk"
 )
 
 func GetClients(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Clients",tmpl)
+	pge := mix.PreparePage("Clients", tmpl, "./views/clients.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		err := ctx.Serve(http.StatusOK, pge.Page(nil, ctx.GetTokenInfo(), ctx.GetToken()))
+		err := mix.Write(w, pge.Create(r, nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -26,12 +25,11 @@ func GetClients(tmpl *template.Template) http.HandlerFunc {
 }
 
 func SearchClients(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Clients",tmpl)
+	pge := mix.PreparePage("Clients", tmpl, "./views/clients.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		err := ctx.Serve(http.StatusOK, pge.Page(nil, ctx.GetTokenInfo(), ctx.GetToken()))
+		err := mix.Write(w, pge.Create(r, nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -40,12 +38,11 @@ func SearchClients(tmpl *template.Template) http.HandlerFunc {
 }
 
 func ViewClient(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("ClientEdit",tmpl)
+	pge := mix.PreparePage("ClientEdit", tmpl, "./view/clientedit.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		key, err := husk.ParseKey(ctx.FindParam("key"))
+		key, err := husk.ParseKey(drx.FindParam(r, "key"))
 
 		if err != nil {
 			log.Println(err)
@@ -53,7 +50,7 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		src := resources.APIResource(http.DefaultClient, ctx)
+		src := resources.APIResource(http.DefaultClient, r)
 		result, err := src.FetchEntity(key.String())
 
 		if err != nil {
@@ -62,7 +59,7 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = ctx.Serve(http.StatusOK, pge.Page(result, ctx.GetTokenInfo(), ctx.GetToken()))
+		err = mix.Write(w, pge.Create(r, result))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -71,12 +68,11 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 }
 
 func CreateClient(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("ClientCreate",tmpl)
+	pge := mix.PreparePage("ClientCreate", tmpl, "./views/clientcreate.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
 
-		err := ctx.Serve(http.StatusOK, pge.Page(nil, ctx.GetTokenInfo(), ctx.GetToken()))
+		err := mix.Write(w, pge.Create(r, nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
