@@ -1,40 +1,50 @@
-<section class="hero">
-    <div class="hero-body">
-        <div class="container has-text-centered">
-            <div class="column is-4 is-offset-4">
-                <h3 class="title has-text-grey">Registration</h3>
-                <div class="box">
-                    <form id="frmRegister" role="form">
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" type="text" id="txtName" minlength="3" autocomplete="name" maxlength="75" placeholder="Full name" required autofocus="">
-                                <p class="help is-danger"></p>
+{{template "master.html" .}}
+{{define "layoutcontent"}}
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="column is-4 is-offset-4">
+                    <h3 class="title has-text-grey">Registration</h3>
+                    <div class="box">
+                        <form id="frmRegister" role="form">
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input is-large" type="text" id="txtName" minlength="3"
+                                           autocomplete="name" maxlength="75" placeholder="Full name" required
+                                           autofocus="">
+                                    <p class="help is-danger"></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" id="txtIdentity" type="text" placeholder="Identification" minlength="10" required>
-                                <p class="help is-danger"></p>
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input is-large" id="txtIdentity" type="text"
+                                           placeholder="Identification" minlength="10" required>
+                                    <p class="help is-danger"></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" type="tel" id="txtPhone" minlength="10" autocomplete="tel" maxlength="10" placeholder="Telephone number" required>
-                                <p class="help is-danger"></p>
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input is-large" type="tel" id="txtPhone" minlength="10"
+                                           autocomplete="tel" maxlength="10" placeholder="Telephone number" required>
+                                    <p class="help is-danger"></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" id="txtEmail" type="email" autocomplete="email" placeholder="Email" minlength="3" required>
-                                <p class="help is-danger"></p>
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input is-large" id="txtEmail" type="email" autocomplete="email"
+                                           placeholder="Email" minlength="3" required>
+                                    <p class="help is-danger"></p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <button id="btnSubmit" class="button is-block is-info is-large is-fullwidth">Register Client</button>
-                        <p id="frmRegisterErr" class="help is-danger"></p>
-                    </form>
+
+                            <button id="btnSubmit" class="button is-block is-info is-large is-fullwidth">Register
+                                Client
+                            </button>
+                            <p id="frmRegisterErr" class="help is-danger"></p>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+{{end}}

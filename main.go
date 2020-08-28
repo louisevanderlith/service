@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	clientId := flag.String("client", "mango.www", "Client ID which will be used to verify this instance")
+	clientId := flag.String("client", "mango.service", "Client ID which will be used to verify this instance")
 	clientSecrt := flag.String("secret", "secret", "Client Secret which will be used to authenticate this instance")
 	security := flag.String("security", "http://localhost:8086", "Security Provider's URL")
 	authority := flag.String("authority", "http://localhost:8094", "Authority Provider's URL")

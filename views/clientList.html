@@ -1,35 +1,38 @@
-<section class="hero is-info welcome is-small">
-    <div class="hero-body">
-        <div class="container">
-            <h1 class="title">
-                Clients
-            </h1>
-            <button class="button is-primary is-small" type="button" id="btnAddSite">Create new client</button>
+{{template "master.html" .}}
+{{define "layoutcontent"}}
+    <section class="hero is-info welcome is-small">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Clients
+                </h1>
+                <button class="button is-primary is-small" type="button" id="btnAddSite">Create new client</button>
+            </div>
         </div>
-    </div>
-</section>
-<section class="section">
-    <table class="table is-fullwidth is-hoverable" id="dataTable">
-        <thead>
+    </section>
+    <section class="section">
+        <table class="table is-fullwidth is-hoverable" id="dataTable">
+            <thead>
             <tr>
                 <th>Name</th>
                 <th>Phone</th>
                 <th>E-mail</th>
                 <th></th>
             </tr>
-        </thead>
-        <tfoot>
+            </thead>
+            <tfoot>
             <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <a href="" class="btn btn-primary">Edit</a>
-                        <br>
-                        <a href="" class="btn btn-primary">Add vehicle</a>
-                    </td>
-                </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="" class="btn btn-primary">Edit</a>
+                    <br>
+                    <a href="" class="btn btn-primary">Add vehicle</a>
+                </td>
+            </tr>
             </tbody>
-    </table>
-</section>
+        </table>
+    </section>
+{{end}}
