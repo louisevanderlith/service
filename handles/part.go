@@ -3,12 +3,11 @@ package handles
 import (
 	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
+	"github.com/louisevanderlith/husk/keys"
 	"github.com/louisevanderlith/service/resources"
 	"html/template"
 	"log"
 	"net/http"
-
-	"github.com/louisevanderlith/husk"
 )
 
 func GetParts(tmpl *template.Template) http.HandlerFunc {
@@ -78,7 +77,7 @@ func ViewPart(tmpl *template.Template) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		key, err := husk.ParseKey(drx.FindParam(r, "key"))
+		key, err := keys.ParseKey(drx.FindParam(r, "key"))
 
 		if err != nil {
 			log.Println(err)
