@@ -3,7 +3,7 @@ package handles
 import (
 	"github.com/gorilla/mux"
 	"github.com/louisevanderlith/droxolite/drx"
-	"github.com/louisevanderlith/kong"
+	"github.com/louisevanderlith/kong/middle"
 	"net/http"
 )
 
@@ -18,8 +18,8 @@ func SetupRoutes(clnt, scrt, securityUrl, authorityUrl string) http.Handler {
 	distPath := http.FileSystem(http.Dir("dist/"))
 	fs := http.FileServer(distPath)
 	r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist/", fs))
-
-	r.HandleFunc("/", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, securityUrl, authorityUrl, Index(tmpl), map[string]bool{"entity.info.search": true, "vehicle.info.search": true})).Methods(http.MethodGet)
+	clntIns := middle.NewClientInspector(clnt, scrt, http.DefaultClient, securityUrl, authorityUrl)
+	r.HandleFunc("/", clntIns.Middleware(Index(tmpl), map[string]bool{"entity.info.search": true, "vehicle.info.search": true})).Methods(http.MethodGet)
 
 	return r
 }
