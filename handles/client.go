@@ -4,7 +4,6 @@ import (
 	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/husk/keys"
-	"github.com/louisevanderlith/service/resources"
 	"html/template"
 	"log"
 	"net/http"
@@ -41,7 +40,7 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		key, err := keys.ParseKey(drx.FindParam(r, "key"))
+		_, err := keys.ParseKey(drx.FindParam(r, "key"))
 
 		if err != nil {
 			log.Println(err)
@@ -49,16 +48,8 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		src := resources.APIResource(http.DefaultClient, r)
-		result, err := src.FetchEntity(key.String())
-
-		if err != nil {
-			log.Println(err)
-			http.Error(w, "", http.StatusBadRequest)
-			return
-		}
-
-		err = mix.Write(w, pge.Create(r, result))
+		//Quotes...
+		err = mix.Write(w, pge.Create(r, nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)

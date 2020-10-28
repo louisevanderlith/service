@@ -4,7 +4,7 @@ import (
 	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/husk/keys"
-	"github.com/louisevanderlith/service/resources"
+	"github.com/louisevanderlith/stock/api"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,11 +14,10 @@ func GetServices(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("services", tmpl, "./views/services.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		pagesize := "A10"
 
-		src := resources.APIResource(http.DefaultClient, r)
-		result, err := src.FetchStockServices(pagesize)
+		clnt := CredConfig.Client(r.Context())
+		result, err := api.FetchAllServices(clnt, Endpoints["stock"], pagesize)
 
 		if err != nil {
 			log.Println(err)
@@ -38,11 +37,9 @@ func SearchServices(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Services", tmpl, "./views/services.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		pagesize := drx.FindParam(r, "pagesize")
-
-		src := resources.APIResource(http.DefaultClient, r)
-		result, err := src.FetchStockService(pagesize)
+		clnt := CredConfig.Client(r.Context())
+		result, err := api.FetchAllServices(clnt, Endpoints["stock"], pagesize)
 
 		if err != nil {
 			log.Println(err)
@@ -84,8 +81,8 @@ func ViewService(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		src := resources.APIResource(http.DefaultClient, r)
-		result, err := src.FetchStockService(key.String())
+		clnt := CredConfig.Client(r.Context())
+		result, err := api.FetchService(clnt, Endpoints["stock"], key)
 
 		if err != nil {
 			log.Println(err)
