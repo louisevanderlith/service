@@ -4,17 +4,21 @@ import (
 	"github.com/coreos/go-oidc"
 	"github.com/gorilla/mux"
 	"github.com/louisevanderlith/droxolite/drx"
+	"github.com/louisevanderlith/droxolite/menu"
+	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/droxolite/open"
+	folio "github.com/louisevanderlith/folio/api"
 	"github.com/louisevanderlith/theme/api"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
+	"log"
 	"net/http"
 )
 
 var (
 	CredConfig *clientcredentials.Config
-	Endpoints map[string]string
+	Endpoints  map[string]string
 )
 
 func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]string) http.Handler {
@@ -39,7 +43,7 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 		ClientID:     clientId,
 		ClientSecret: clientSecret,
 		TokenURL:     provider.Endpoint().TokenURL,
-		Scopes:       []string{oidc.ScopeOpenID},
+		Scopes:       []string{oidc.ScopeOpenID, "theme", "folio"},
 	}
 
 	err = api.UpdateTemplate(CredConfig.Client(ctx), endpoints["theme"])
@@ -71,4 +75,32 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 	r.HandleFunc("/", open.LoginMiddleware(v, Index(tmpl))).Methods(http.MethodGet)
 
 	return r
+}
+
+func FullMenu() *menu.Menu {
+	m := menu.NewMenu()
+
+	m.AddItem(menu.NewItem("a", "/regions", "Regions", nil))
+	m.AddItem(menu.NewItem("b", "/stock/parts", "Parts", nil))
+	m.AddItem(menu.NewItem("b", "/stock/vehicles", "Vehicles", nil))
+	m.AddItem(menu.NewItem("b", "/vin", "VIN Numbers", nil))
+	m.AddItem(menu.NewItem("e", "/clients", "Clients", nil))
+
+	return m
+}
+
+func ThemeContentMod() mix.ModFunc {
+	return func(f mix.MixerFactory, r *http.Request) {
+		clnt := CredConfig.Client(r.Context())
+
+		content, err := folio.FetchDisplay(clnt, Endpoints["folio"])
+
+		if err != nil {
+			log.Println("Fetch Profile Error", err)
+			panic(err)
+			return
+		}
+
+		f.SetValue("Folio", content)
+	}
 }

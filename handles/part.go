@@ -12,7 +12,10 @@ import (
 
 func GetParts(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Parts", tmpl, "./views/parts.html")
-
+	pge.AddMenu(FullMenu())
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		pagesize := "A10"
@@ -37,7 +40,10 @@ func GetParts(tmpl *template.Template) http.HandlerFunc {
 //parts/view/A10
 func SearchParts(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Parts", tmpl, "./views/parts.html")
-
+	pge.AddMenu(FullMenu())
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 		pagesize := drx.FindParam(r, "pagesize")
 		clnt := CredConfig.Client(r.Context())
@@ -59,7 +65,8 @@ func SearchParts(tmpl *template.Template) http.HandlerFunc {
 
 func CreatePart(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("PartCreate", tmpl, "./view/partcreate.html")
-
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		err := mix.Write(w, pge.Create(r, nil))
@@ -72,7 +79,8 @@ func CreatePart(tmpl *template.Template) http.HandlerFunc {
 
 func ViewPart(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Part View", tmpl, "./view/partview.html")
-
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		key, err := keys.ParseKey(drx.FindParam(r, "key"))

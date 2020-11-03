@@ -9,17 +9,21 @@ import (
 
 func main() {
 	host := flag.String("host", "http://127.0.0.1:8096", "This application's URL")
-	clientId := flag.String("client", "mango.service", "Client ID which will be used to verify this instance")
+	clientId := flag.String("client", "service", "Client ID which will be used to verify this instance")
 	clientSecrt := flag.String("secret", "secret", "Client Secret which will be used to authenticate this instance")
 	issuer := flag.String("issuer", "http://127.0.0.1:8080/auth/realms/mango", "OIDC Provider's URL")
 	theme := flag.String("theme", "http://127.0.0.1:8093", "Theme URL")
 	stock := flag.String("stock", "http://127.0.0.1:8101", "Stock URL")
+	folio := flag.String("folio", "http://127.0.0.1:8090", "Folio URL")
+	artifact := flag.String("artifact", "http://127.0.0.1:8082", "Artifact URL")
 	flag.Parse()
 
 	ends := map[string]string{
-		"issuer": *issuer,
-		"theme":  *theme,
-		"stock":  *stock,
+		"issuer":   *issuer,
+		"theme":    *theme,
+		"stock":    *stock,
+		"folio":    *folio,
+		"artifact": *artifact,
 	}
 
 	srvr := &http.Server{

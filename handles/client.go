@@ -11,7 +11,10 @@ import (
 
 func GetClients(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Clients", tmpl, "./views/clients.html")
-
+	pge.AddMenu(FullMenu())
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		err := mix.Write(w, pge.Create(r, nil))
@@ -24,7 +27,10 @@ func GetClients(tmpl *template.Template) http.HandlerFunc {
 
 func SearchClients(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Clients", tmpl, "./views/clients.html")
-
+	pge.AddMenu(FullMenu())
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		err := mix.Write(w, pge.Create(r, nil))
@@ -37,7 +43,10 @@ func SearchClients(tmpl *template.Template) http.HandlerFunc {
 
 func ViewClient(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("ClientEdit", tmpl, "./view/clientedit.html")
-
+	pge.AddMenu(FullMenu())
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		_, err := keys.ParseKey(drx.FindParam(r, "key"))
@@ -59,7 +68,10 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 
 func CreateClient(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("ClientCreate", tmpl, "./views/clientcreate.html")
-
+	pge.AddMenu(FullMenu())
+	pge.AddModifier(mix.EndpointMod(Endpoints))
+	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		err := mix.Write(w, pge.Create(r, nil))
