@@ -4,7 +4,7 @@ import (
 	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/husk/keys"
-	"github.com/louisevanderlith/stock/api"
+	"github.com/louisevanderlith/utility/api"
 	"html/template"
 	"log"
 	"net/http"

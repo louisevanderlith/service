@@ -80,6 +80,10 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 func FullMenu() *menu.Menu {
 	m := menu.NewMenu()
 
+	m.AddItem(menu.NewItem("1", "/stock", "Stock", nil))
+	m.AddItem(menu.NewItem("2", "/categories", "Categories", nil))
+	m.AddItem(menu.NewItem("3", "/sales", "Sales", nil))
+
 	m.AddItem(menu.NewItem("a", "/regions", "Regions", nil))
 	m.AddItem(menu.NewItem("b", "/stock/parts", "Parts", nil))
 	m.AddItem(menu.NewItem("b", "/stock/vehicles", "Vehicles", nil))

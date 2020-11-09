@@ -4,7 +4,7 @@ import (
 	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/husk/keys"
-	"github.com/louisevanderlith/stock/api"
+	"github.com/louisevanderlith/parts/api"
 	"html/template"
 	"log"
 	"net/http"
@@ -21,7 +21,7 @@ func GetParts(tmpl *template.Template) http.HandlerFunc {
 		pagesize := "A10"
 
 		clnt := CredConfig.Client(r.Context())
-		result, err := api.FetchAllParts(clnt, Endpoints["stock"], pagesize)
+		result, err := api.FetchAllSpares(clnt, Endpoints["stock"], pagesize)
 
 		if err != nil {
 			log.Println(err)
@@ -47,7 +47,7 @@ func SearchParts(tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		pagesize := drx.FindParam(r, "pagesize")
 		clnt := CredConfig.Client(r.Context())
-		result, err := api.FetchAllParts(clnt, Endpoints["stock"], pagesize)
+		result, err := api.FetchAllSpares(clnt, Endpoints["stock"], pagesize)
 
 		if err != nil {
 			log.Println(err)
@@ -92,7 +92,7 @@ func ViewPart(tmpl *template.Template) http.HandlerFunc {
 		}
 
 		clnt := CredConfig.Client(r.Context())
-		result, err := api.FetchPart(clnt, Endpoints["stock"], key)
+		result, err := api.FetchSpare(clnt, Endpoints["stock"], key)
 
 		if err != nil {
 			log.Println(err)
