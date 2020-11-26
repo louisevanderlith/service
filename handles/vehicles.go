@@ -5,6 +5,7 @@ import (
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/husk/keys"
 	"github.com/louisevanderlith/vehicle/api"
+	"golang.org/x/oauth2"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,10 +15,11 @@ func GetVehicles(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Vehicles", tmpl, "./views/vehicles.html")
 	pge.AddMenu(FullMenu())
 	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
 	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
-		clnt := CredConfig.Client(r.Context())
+		tkn := r.Context().Value("Token").(oauth2.Token)
+		clnt := AuthConfig.Client(r.Context(), &tkn)
 		result, err := api.FetchAllVehicles(clnt, Endpoints["vehicle"], "A10")
 
 		if err != nil {
@@ -38,10 +40,11 @@ func SearchVehicles(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Vehicles", tmpl, "./views/vehicles.html")
 	pge.AddMenu(FullMenu())
 	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
 	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
-		clnt := CredConfig.Client(r.Context())
+		tkn := r.Context().Value("Token").(oauth2.Token)
+		clnt := AuthConfig.Client(r.Context(), &tkn)
 		result, err := api.FetchAllVehicles(clnt, Endpoints["vehicle"], drx.FindParam(r, "pagesize"))
 
 		if err != nil {
@@ -62,7 +65,7 @@ func ViewVehicles(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Vehicles View", tmpl, "./views/vehicleview.html")
 	pge.AddMenu(FullMenu())
 	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(CredConfig.ClientID))
+	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
 	pge.AddModifier(ThemeContentMod())
 	return func(w http.ResponseWriter, r *http.Request) {
 		key, err := keys.ParseKey(drx.FindParam(r, "key"))
@@ -73,7 +76,8 @@ func ViewVehicles(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		clnt := CredConfig.Client(r.Context())
+		tkn := r.Context().Value("Token").(oauth2.Token)
+		clnt := AuthConfig.Client(r.Context(), &tkn)
 		result, err := api.FetchVehicleInfo(clnt, Endpoints["vehicle"], key)
 
 		if err != nil {

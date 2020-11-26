@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	CredConfig *clientcredentials.Config
+	AuthConfig *oauth2.Config
+	credConfig *clientcredentials.Config
 	Endpoints  map[string]string
 )
 
@@ -31,7 +32,7 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 
 	Endpoints = endpoints
 
-	authConfig := &oauth2.Config{
+	AuthConfig = &oauth2.Config{
 		ClientID:     clientId,
 		ClientSecret: clientSecret,
 		Endpoint:     provider.Endpoint(),
@@ -39,14 +40,14 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 		Scopes:       []string{oidc.ScopeOpenID},
 	}
 
-	CredConfig = &clientcredentials.Config{
+	credConfig = &clientcredentials.Config{
 		ClientID:     clientId,
 		ClientSecret: clientSecret,
 		TokenURL:     provider.Endpoint().TokenURL,
 		Scopes:       []string{oidc.ScopeOpenID, "theme", "folio"},
 	}
 
-	err = api.UpdateTemplate(CredConfig.Client(ctx), endpoints["theme"])
+	err = api.UpdateTemplate(credConfig.Client(ctx), endpoints["theme"])
 
 	if err != nil {
 		panic(err)
@@ -63,16 +64,12 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 	fs := http.FileServer(distPath)
 	r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist/", fs))
 
-	lock := open.NewUILock(authConfig)
+	lock := open.NewUILock(provider, AuthConfig)
+
 	r.HandleFunc("/login", lock.Login).Methods(http.MethodGet)
 	r.HandleFunc("/callback", lock.Callback).Methods(http.MethodGet)
 
-	oidcConfig := &oidc.Config{
-		ClientID: clientId,
-	}
-	v := provider.Verifier(oidcConfig)
-
-	r.HandleFunc("/", open.LoginMiddleware(v, Index(tmpl))).Methods(http.MethodGet)
+	r.Handle("/", lock.Middleware(Index(tmpl))).Methods(http.MethodGet)
 
 	return r
 }
@@ -95,7 +92,7 @@ func FullMenu() *menu.Menu {
 
 func ThemeContentMod() mix.ModFunc {
 	return func(f mix.MixerFactory, r *http.Request) {
-		clnt := CredConfig.Client(r.Context())
+		clnt := credConfig.Client(r.Context())
 
 		content, err := folio.FetchDisplay(clnt, Endpoints["folio"])
 
