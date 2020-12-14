@@ -37,7 +37,7 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 		ClientSecret: clientSecret,
 		Endpoint:     provider.Endpoint(),
 		RedirectURL:  host + "/callback",
-		Scopes:       []string{oidc.ScopeOpenID},
+		Scopes:       []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess},
 	}
 
 	credConfig = &clientcredentials.Config{
@@ -69,7 +69,13 @@ func SetupRoutes(host, clientId, clientSecret string, endpoints map[string]strin
 	r.HandleFunc("/login", lock.Login).Methods(http.MethodGet)
 	r.HandleFunc("/callback", lock.Callback).Methods(http.MethodGet)
 
-	r.Handle("/", lock.Middleware(Index(tmpl))).Methods(http.MethodGet)
+	fact := mix.NewPageFactory(tmpl)
+	fact.AddMenu(FullMenu())
+	fact.AddModifier(mix.EndpointMod(Endpoints))
+	fact.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
+	fact.AddModifier(ThemeContentMod())
+
+	r.Handle("/", lock.Middleware(Index(fact))).Methods(http.MethodGet)
 
 	return r
 }
@@ -91,7 +97,7 @@ func FullMenu() *menu.Menu {
 }
 
 func ThemeContentMod() mix.ModFunc {
-	return func(f mix.MixerFactory, r *http.Request) {
+	return func(b mix.Bag, r *http.Request) {
 		clnt := credConfig.Client(r.Context())
 
 		content, err := folio.FetchDisplay(clnt, Endpoints["folio"])
@@ -102,6 +108,6 @@ func ThemeContentMod() mix.ModFunc {
 			return
 		}
 
-		f.SetValue("Folio", content)
+		b.SetValue("Folio", content)
 	}
 }

@@ -6,21 +6,15 @@ import (
 	"github.com/louisevanderlith/husk/keys"
 	"github.com/louisevanderlith/vin/api"
 	"golang.org/x/oauth2"
-	"html/template"
 	"log"
 	"net/http"
 )
 
-func GetRegions(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Regions", tmpl, "./views/regions.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func GetRegions(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tkn := r.Context().Value("Token").(oauth2.Token)
 		clnt := AuthConfig.Client(r.Context(), &tkn)
-		result, err := api.FetchRegions(clnt, Endpoints["vin"], "A10")
+		data, err := api.FetchRegions(clnt, Endpoints["vin"], "A10")
 
 		if err != nil {
 			log.Println("Fetch Regions Error", err)
@@ -28,7 +22,7 @@ func GetRegions(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = mix.Write(w, pge.Create(r, result))
+		err = mix.Write(w, fact.Create(r, "Regions", "./views/regions.html", mix.NewDataBag(data)))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -36,16 +30,11 @@ func GetRegions(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func SearchRegions(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Regions", tmpl, "./views/regions.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func SearchRegions(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tkn := r.Context().Value("Token").(oauth2.Token)
 		clnt := AuthConfig.Client(r.Context(), &tkn)
-		result, err := api.FetchRegions(clnt, Endpoints["vin"], drx.FindParam(r, "pagesize"))
+		data, err := api.FetchRegions(clnt, Endpoints["vin"], drx.FindParam(r, "pagesize"))
 
 		if err != nil {
 			log.Println("Fetch Regions", err)
@@ -53,7 +42,7 @@ func SearchRegions(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = mix.Write(w, pge.Create(r, result))
+		err = mix.Write(w, fact.Create(r, "Regions", "./views/regions.html", mix.NewDataBag(data)))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -61,12 +50,7 @@ func SearchRegions(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func ViewRegion(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Region View", tmpl, "./views/regionview.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func ViewRegion(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key, err := keys.ParseKey(drx.FindParam(r, "key"))
 
@@ -78,7 +62,7 @@ func ViewRegion(tmpl *template.Template) http.HandlerFunc {
 
 		tkn := r.Context().Value("Token").(oauth2.Token)
 		clnt := AuthConfig.Client(r.Context(), &tkn)
-		result, err := api.FetchRegion(clnt, Endpoints["vin"], key)
+		data, err := api.FetchRegion(clnt, Endpoints["vin"], key)
 
 		if err != nil {
 			log.Println("Fetch Region Error", err)
@@ -86,7 +70,7 @@ func ViewRegion(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = mix.Write(w, pge.Create(r, result))
+		err = mix.Write(w, fact.Create(r, "Region View", "./views/regionview.html", mix.NewDataBag(data)))
 
 		if err != nil {
 			log.Println("Serve Error", err)

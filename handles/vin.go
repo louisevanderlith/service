@@ -6,21 +6,15 @@ import (
 	"github.com/louisevanderlith/husk/keys"
 	"github.com/louisevanderlith/vin/api"
 	"golang.org/x/oauth2"
-	"html/template"
 	"log"
 	"net/http"
 )
 
-func GetVIN(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("VIN", tmpl, "./views/vin/vin.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func GetVIN(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tkn := r.Context().Value("Token").(oauth2.Token)
 		clnt := AuthConfig.Client(r.Context(), &tkn)
-		result, err := api.FetchLatestVINs(clnt, Endpoints["vin"], "A10")
+		data, err := api.FetchLatestVINs(clnt, Endpoints["vin"], "A10")
 
 		if err != nil {
 			log.Println("Fetch VINs", err)
@@ -28,7 +22,7 @@ func GetVIN(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = mix.Write(w, pge.Create(r, result))
+		err = mix.Write(w, fact.Create(r, "VIN", "./views/vin/vin.html", mix.NewDataBag(data)))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -36,16 +30,11 @@ func GetVIN(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func SearchVIN(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("VIN", tmpl, "./views/vin.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func SearchVIN(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tkn := r.Context().Value("Token").(oauth2.Token)
 		clnt := AuthConfig.Client(r.Context(), &tkn)
-		result, err := api.FetchLatestVINs(clnt, Endpoints["vin"], drx.FindParam(r, "pagesize"))
+		data, err := api.FetchLatestVINs(clnt, Endpoints["vin"], drx.FindParam(r, "pagesize"))
 
 		if err != nil {
 			log.Println("Fetch VINs Error", err)
@@ -53,7 +42,7 @@ func SearchVIN(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = mix.Write(w, pge.Create(r, result))
+		err = mix.Write(w, fact.Create(r, "VIN", "./views/vin/vin.html", mix.NewDataBag(data)))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -61,12 +50,7 @@ func SearchVIN(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func ViewVIN(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("VIN View", tmpl, "./views/vinview.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func ViewVIN(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key, err := keys.ParseKey(drx.FindParam(r, "key"))
 
@@ -78,7 +62,7 @@ func ViewVIN(tmpl *template.Template) http.HandlerFunc {
 
 		tkn := r.Context().Value("Token").(oauth2.Token)
 		clnt := AuthConfig.Client(r.Context(), &tkn)
-		result, err := api.FetchVIN(clnt, Endpoints["vin"], key)
+		data, err := api.FetchVIN(clnt, Endpoints["vin"], key)
 
 		if err != nil {
 			log.Println("Fetch VIN Error", err)
@@ -86,7 +70,7 @@ func ViewVIN(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		err = mix.Write(w, pge.Create(r, result))
+		err = mix.Write(w, fact.Create(r, "VIN View", "./views/vinview.html", mix.NewDataBag(data)))
 
 		if err != nil {
 			log.Println("Serve Error", err)

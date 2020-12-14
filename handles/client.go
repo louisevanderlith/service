@@ -4,20 +4,14 @@ import (
 	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/husk/keys"
-	"html/template"
 	"log"
 	"net/http"
 )
 
-func GetClients(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Clients", tmpl, "./views/clients.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func GetClients(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		err := mix.Write(w, pge.Create(r, nil))
+		err := mix.Write(w, fact.Create(r, "Clients", "./views/clients.html", nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -25,15 +19,10 @@ func GetClients(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func SearchClients(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("Clients", tmpl, "./views/clients.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func SearchClients(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		err := mix.Write(w, pge.Create(r, nil))
+		err := mix.Write(w, fact.Create(r, "Clients", "./views/clients.html", nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -41,12 +30,7 @@ func SearchClients(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func ViewClient(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("ClientEdit", tmpl, "./view/clientedit.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func ViewClient(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		_, err := keys.ParseKey(drx.FindParam(r, "key"))
@@ -58,7 +42,7 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 		}
 
 		//Quotes...
-		err = mix.Write(w, pge.Create(r, nil))
+		err = mix.Write(w, fact.Create(r, "ClientEdit", "./view/clientedit.html", nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
@@ -66,15 +50,10 @@ func ViewClient(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func CreateClient(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage("ClientCreate", tmpl, "./views/clientcreate.html")
-	pge.AddMenu(FullMenu())
-	pge.AddModifier(mix.EndpointMod(Endpoints))
-	pge.AddModifier(mix.IdentityMod(AuthConfig.ClientID))
-	pge.AddModifier(ThemeContentMod())
+func CreateClient(fact mix.MixerFactory) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		err := mix.Write(w, pge.Create(r, nil))
+		err := mix.Write(w, fact.Create(r,"ClientCreate", "./views/clientcreate.html", nil))
 
 		if err != nil {
 			log.Println("Serve Error", err)
